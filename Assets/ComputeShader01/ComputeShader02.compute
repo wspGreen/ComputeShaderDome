@@ -1,0 +1,31 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// ( CPU -> GPU )
+Texture2D inputTexture;
+
+// ( GPU -> CPU )
+RWTexture2D<float4> outputTexture;
+
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+// RWTexture2D<float4> Result;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+
+    // Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    
+    float R = inputTexture[id.xy].r;
+    float G = inputTexture[id.xy].g;
+    float B = inputTexture[id.xy].b;
+    float A = 1;
+    
+    float Y = R * 0.299 + G * 0.587 + B * 0.114; // RGB to gary
+    
+    outputTexture[id.xy] = float4(Y, Y, Y, A); // to CPU
+    
+}
